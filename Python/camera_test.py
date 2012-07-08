@@ -8,6 +8,7 @@
 # Copyright:   (c) smurftheweb 2012
 # Licence:     Unrestricted
 #-------------------------------------------------------------------------------
+from camera import Camera
 
 def main():
   cam = Camera()
