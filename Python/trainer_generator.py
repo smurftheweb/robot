@@ -12,21 +12,27 @@
 import os
 from camera import Camera
 import cv2
+import time
 
 WINDOW_NAME = "Live Feed"
 
 class TrainerGenerator():
-    def __init__(self, output_path):
+    def __init__(self, output_path, wait_time=0):
         # setup camera object
         self.output_path = output_path
+        self.wait_time = wait_time
         self.camera = Camera()
 
         # check path exists, or create it if necessary
         self.check_dir(output_path)
+        print "Training set will be generated in {0}".format(output_path)
 
     def check_dir(self, directory_path):
       """ Checks if a folder exists, and creates it if it does not"""
-      d = os.path.dirname(output_path)
+      if os.path.isfile(directory_path):
+        d = os.path.dirname(directory_path)
+      else:
+        d = directory_path
       if not os.path.exists(d): os.makedirs(d)
 
     def run(self):
@@ -54,17 +60,22 @@ class TrainerGenerator():
         # note for this all actions will be folders, containing files of
         # wireframes. This may change in the future!
         # TODO: cache whether we need to do this in a list of actions
-        imgFolder = os.path.join(self.output_path, key)
-        check_dir(imgFolder)
-        imgFile = os.path.join(imgFolder, imgCount + ".dat")
-        savetxt(imgFile, wireframe)
+        imgFolder = os.path.join(self.output_path, str(key))
+        self.check_dir(imgFolder)
+        imgFile = os.path.join(imgFolder, "{0}.dat".format(imgCount))
+        wireframe.tofile(imgFile)
+        print "Saved action {0} in {1}".format(key, imgFile)
         imgCount = imgCount + 1
+        
+        # If set, wait (for example, wait while robot moves!)
+        # TODO - this should be linked to the action actually being done
+        if self.wait_time > 0: time.sleep(self.wait_time)
 
       # Tidy up and exit (if needed)
       return
 
 def main():
-    TrainerGenerator("~/Code/training_set/").run()
+    TrainerGenerator("/home/raspbian/Code/training_set/").run()
 
 if __name__ == '__main__':
     main()
