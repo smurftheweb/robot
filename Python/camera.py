@@ -46,7 +46,7 @@ class Camera():
     edges = cv2.Canny(gray, threshold, threshold*3)
     
     return (frame, edges)
-    
+      
   def grab_colour_wireframe(self, threshold=30):
     # grab frame
     frame = self.grab_frame()

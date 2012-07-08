@@ -47,6 +47,7 @@ class TrainerGenerator():
       while (stopLoop is False):
         # grab a frame from the camera and show it to the user
         frame, wireframe = self.camera.grab_wireframe()
+        frame[wireframe > 0] = (0, 0, 255)        
         cv2.imshow(WINDOW_NAME, frame)
 
         # wait for user response - what is the "action" to take
@@ -75,7 +76,7 @@ class TrainerGenerator():
       return
 
 def main():
-    TrainerGenerator("/home/raspbian/Code/training_set/").run()
+    TrainerGenerator("training_set/").run()
 
 if __name__ == '__main__':
     main()
