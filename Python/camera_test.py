@@ -9,6 +9,7 @@
 # Licence:     Unrestricted
 #-------------------------------------------------------------------------------
 from camera import Camera
+import cv2
 
 def main():
   cam = Camera()
