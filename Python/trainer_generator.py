@@ -22,6 +22,8 @@ class TrainerGenerator():
         self.output_path = output_path
         self.wait_time = wait_time
         self.camera = Camera()
+        self.width = -1
+        self.height = -1
 
         # check path exists, or create it if necessary
         self.check_dir(output_path)
@@ -47,6 +49,7 @@ class TrainerGenerator():
       while (stopLoop is False):
         # grab a frame from the camera and show it to the user
         frame, wireframe = self.camera.grab_wireframe()
+        if self.width == -1: self.width, self.height = wireframe.shape
         frame[wireframe > 0] = (0, 0, 255)        
         cv2.imshow(WINDOW_NAME, frame)
 
@@ -72,11 +75,23 @@ class TrainerGenerator():
         # TODO - this should be linked to the action actually being done
         if self.wait_time > 0: time.sleep(self.wait_time)
 
+      # Now that we have done collecting images, create the network file
+      # width height middle_layer output_layer
+      middle_layer = raw_input("How many nodes should be in the middle layer: ")
+      output_layer = raw_input("How many nodes should be in the output layer: ")
+      
+      networkFilename = os.path.join(self.output_path, "network.def")
+      f = open(networkFilename, 'w')
+      f.write("{0} {1} {2} {3}".format(self.width, self.height, middle_layer, output_layer))
+      f.close()
+
       # Tidy up and exit (if needed)
       return
 
 def main():
-    TrainerGenerator("training_set/").run()
+    path = raw_input("Training set name: ")
+    gen = TrainerGenerator(path)
+    gen.run()
 
 if __name__ == '__main__':
     main()
